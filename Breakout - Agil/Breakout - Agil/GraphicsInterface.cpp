@@ -1,11 +1,15 @@
 #include "GraphicsInterface.h"
 
-
+GraphicsInterface* GraphicsInterface::mSingleton = 0;
 
 GraphicsInterface::GraphicsInterface()
 {
+#ifdef __linux__
+	mGraphicsEngine = new OGLGraphicsEngine();
+#elif _WIN32
 	mGraphicsEngine = new GraphicsEngine();
-
+#endif
+	
 }
 
 
@@ -13,27 +17,34 @@ GraphicsInterface::~GraphicsInterface()
 {
 }
 
-
-
-void GraphicsInterface::Initialize()
+GraphicsInterface* GraphicsInterface::GetSingleton()
 {
-	mGraphicsEngine->InitD3D(GetActiveWindow());
-	mGraphicsEngine->InitPipeline();
-	mGraphicsEngine->InitGraphics();
+	if (!mSingleton)
+	{
+		mSingleton = new GraphicsInterface();
+	}
+
+	return mSingleton;
 }
 
-int GraphicsInterface::CreateObject(const char* pMeshGroup)
+void GraphicsInterface::Initialize(float pFoVAngleY, float pHeight, float pWidth, float pNear, float pFar, float pZPos)
+{
+	mGraphicsEngine->InitD3D();
+	mGraphicsEngine->InitPipeline();
+	mGraphicsEngine->InitGraphics(pFoVAngleY, pHeight, pWidth, pNear, pFar, pZPos);
+}
+
+int GraphicsInterface::CreateObject(string pMeshGroup)
 {
 	int retValue;
-#ifdef _WIN32
+#ifdef __linux__
+	//Linux Code
+#elif _WIN32
 	if (mLoadedObjects.find(pMeshGroup) != mLoadedObjects.end())
 	{
 		return mLoadedObjects[pMeshGroup];
 	}
 	retValue = mGraphicsEngine->CreateObject(pMeshGroup);
-#elif __linux__
-	//Linux Code
-
 #endif
 	mLoadedObjects[pMeshGroup] = retValue;
 	return retValue;

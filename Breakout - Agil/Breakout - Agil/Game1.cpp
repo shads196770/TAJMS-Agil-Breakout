@@ -19,27 +19,23 @@ Game1::~Game1()
 
 bool Game1::Initialize()
 {
-	InputSystem* tInput = new InputSystem();
+	InputSystem* tInput = new InputSystem("InputSystem");
 	tInput->Initialize();
 	mSystems.push_back(tInput);
 	
-	PhysicSystem* tPhysics = new PhysicSystem();
+	PhysicSystem* tPhysics = new PhysicSystem("PhysicSystem");
 	tPhysics->Initialize();
 	mSystems.push_back(tPhysics);
 
-	RenderSystem* tRender = new RenderSystem();
+	RenderSystem* tRender = new RenderSystem("RenderSystem");
 	tRender->Initialize();
 	mSystems.push_back(tRender);
 
-	TriggerSystem* tTrigger = new TriggerSystem();
+	TriggerSystem* tTrigger = new TriggerSystem("TriggerSystem");
 	tTrigger->Initialize();
 	mSystems.push_back(tTrigger);
 
 
-	mGraphicsEngine = new GraphicsEngine();
-	mGraphicsEngine->InitD3D(GetActiveWindow());
-	mGraphicsEngine->InitPipeline();
-	mGraphicsEngine->InitGraphics();
 
 	
 	return true;
@@ -47,7 +43,7 @@ bool Game1::Initialize()
 
 void Game1::Run()
 {
-	double tDeltaTimeMilli = 17; //global? or sent in func
+	double tDeltaTimeSecond = 0.017f; //global? or sent in func
 
 	SDL_Event tEvent;
 
@@ -64,7 +60,7 @@ void Game1::Run()
 		//mGraphicsEngine->RenderFrame();
 		for each (System* sys in mSystems)
 		{
-			sys->Update(tDeltaTimeMilli);
+			sys->Update(tDeltaTimeSecond);
 		}
 
 	}

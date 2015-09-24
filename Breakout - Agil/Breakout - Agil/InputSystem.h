@@ -8,6 +8,7 @@ class InputSystem :	public System
 {
 public:
 	InputSystem();
+	InputSystem(string pName);
 	~InputSystem();
 	
 	void Initialize();
@@ -24,5 +25,6 @@ private:
 	SDL_Event mSDLEvent;
 	void MoveRight(EntityID pEntityID);
 	void MoveLeft(EntityID pEntityID);
+	void StandStill(EntityID pEntityID);
 };
 

@@ -12,6 +12,10 @@ InputSystem::InputSystem()
 {
 }
 
+InputSystem::InputSystem(string pName):System(pName)
+{
+}
+
 
 InputSystem::~InputSystem()
 {
@@ -58,6 +62,7 @@ void InputSystem::CheckKeyboard()
 	if (mKeyState[SDL_SCANCODE_ESCAPE])
 	{
 		cout << "Stäng av programmet";
+		exit(0);
 	}
 }
 
@@ -80,19 +85,36 @@ void InputSystem::MoveLeft(EntityID pEntityID)
 	VelocityComponent* tVel = GetComponent<VelocityComponent>(pEntityID);
 	tVel->mDirection = vec3(-1.0f, 0.0f, 0.0f);
 }
+
+void InputSystem::StandStill(EntityID pEntityID)
+{
+	ComponentTable* tCompTable = tCompTable->GetInstance();
+
+	tCompTable->AddComponent(pEntityID, ComponentType::VelocityType);
+
+	VelocityComponent* tVel = GetComponent<VelocityComponent>(pEntityID);
+	tVel->mDirection = vec3(0.0f, 0.0f, 0.0f);
+}
+
 void InputSystem::HandleInput(EntityID pEntityID)
 {
 	int tVectorInput = gUserCmd.mKeysPressed.size();
-	if (gUserCmd.mLeftArrowPressed == true)
+	if (gUserCmd.mLeftArrowPressed == gUserCmd.mRightArrowPressed )
+	{
+		StandStill(pEntityID);
+	}
+	else if (gUserCmd.mLeftArrowPressed == true)
 	{
 		MoveLeft(pEntityID);
 		//cout << "<--";
 	}
-	if (gUserCmd.mRightArrowPressed == true)
+	else if (gUserCmd.mRightArrowPressed == true)
 	{
 		MoveRight(pEntityID);
 		//cout << "-->";
 	}
+		
+
 
 	for (size_t i = 0; i < tVectorInput; i++)
 	{
